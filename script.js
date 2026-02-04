@@ -15,11 +15,31 @@ function handleDigits(digit) {
 function handleDecimal() {
   if (waitingForNextValue) {
     currentValue = "0.";
-    waitingForNextValue = false
+    waitingForNextValue = false;
   } else if (currentValue.includes(".")) {
     return;
   } else {
     currentValue += ".";
+  }
+}
+
+function handleClearEntry() {
+  if (waitingForNextValue) {
+    return;
+  } else {
+    currentValue = "0";
+    waitingForNextValue = true;
+  }
+}
+
+function handleBackSpace(){
+  if(waitingForNextValue){
+    return
+  }else if(currentValue.length === 1){
+    currentValue = "0"
+    waitingForNextValue = true
+  } else {
+    currentValue = currentValue.slice(0, -1)
   }
 }
 
