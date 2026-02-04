@@ -12,41 +12,13 @@ function handleDigits(digit) {
   }
 }
 
-function handleDecimal() {
-  if (waitingForNextValue) {
-    currentValue = "0.";
-    waitingForNextValue = false
-  } else if (currentValue.includes(".")) {
-    return;
-  } else {
-    currentValue += ".";
-  }
-}
-
-function handleOperator(operation) {
+function handleOperator(operate) {
   if (operator !== null && !waitingForNextValue) {
     calculate();
   }
-
   previousValue = currentValue;
-  operator = operation;
+  operator = operate;
   waitingForNextValue = true;
-}
-
-function handleCalculate(firstValue, secondValue, theOperator) {
-  const valueOne = Number(firstValue);
-  const valueTwo = Number(secondValue);
-  if (theOperator === "+") {
-    return valueOne + valueTwo;
-  } else if (theOperator === "-") {
-    return valueOne - valueTwo;
-  } else if (theOperator === "×") {
-    return valueOne * valueTwo;
-  } else if (theOperator === "/") {
-    return valueOne / valueTwo;
-  } else {
-    return valueTwo;
-  }
 }
 
 function handleEquals() {
@@ -54,6 +26,23 @@ function handleEquals() {
   previousValue = null;
   operator = null;
   waitingForNextValue = true;
+}
+
+function handleCalculate(prev, currently, operand) {
+  const previous = Number(prev);
+  const current = Number(currently);
+
+  if (operand === "+") {
+    return previous + current;
+  } else if (operand === "-") {
+    return previous - current;
+  } else if (operand === "x") {
+    return previous * current;
+  } else if (operand === "/") {
+    return previous / current;
+  } else {
+    return current;
+  }
 }
 
 function calculate() {
