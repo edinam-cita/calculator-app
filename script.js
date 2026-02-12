@@ -3,8 +3,19 @@ let currentValue = "0";
 let operator = null;
 let waitingForNextValue = false;
 
+let lastOperator = null;
+let secondOperand = null;
+
+function exitRepeatEquals() {
+  lastOperator = null;
+  secondOperand = null;
+}
+
 function handleDigits(digit) {
-  if (waitingForNextValue) {
+  if (operator === null && lastOperator !== null) {
+    exitRepeatEquals();
+    currentValue = digit;
+  } else if (waitingForNextValue) {
     currentValue = digit;
     waitingForNextValue = false;
   } else {
@@ -13,7 +24,10 @@ function handleDigits(digit) {
 }
 
 function handleDecimal() {
-  if (waitingForNextValue) {
+  if (operator === null && lastOperator !== null) {
+    exitRepeatEquals();
+    currentValue = "0.";
+  } else if (waitingForNextValue) {
     currentValue = "0.";
     waitingForNextValue = false;
   } else if (currentValue.includes(".")) {
@@ -24,7 +38,9 @@ function handleDecimal() {
 }
 
 function handleClearEntry() {
-  if (waitingForNextValue) {
+  if (operator === null && lastOperator !== null) {
+    exitRepeatEquals();
+  } else if (waitingForNextValue) {
     return;
   } else {
     currentValue = "0";
@@ -32,21 +48,23 @@ function handleClearEntry() {
   }
 }
 
-function handleBackSpace(){
-  if(waitingForNextValue){
-    return
-  }else if(currentValue.length === 1){
-    currentValue = "0"
-    waitingForNextValue = true
+function handleBackSpace() {
+  if (operator === null && lastOperator !== null) {
+    exitRepeatEquals();
+  } else if (waitingForNextValue) {
+    return;
+  } else if (currentValue.length === 1) {
+    currentValue = "0";
+    waitingForNextValue = true;
   } else {
-    currentValue = currentValue.slice(0, -1)
+    currentValue = currentValue.slice(0, -1);
   }
 }
 
 function handleOperator(operation) {
   if (operator !== null && !waitingForNextValue) {
     calculate();
-  }
+  } 
 
   previousValue = currentValue;
   operator = operation;
@@ -70,10 +88,18 @@ function handleCalculate(firstValue, secondValue, theOperator) {
 }
 
 function handleEquals() {
-  calculate();
-  previousValue = null;
-  operator = null;
-  waitingForNextValue = true;
+  if (operator === null && lastOperator !== null) {
+    currentValue = String(
+      handleCalculate(currentValue, secondOperand, lastOperator),
+    );
+  } else {
+    secondOperand = currentValue;
+    calculate();
+    lastOperator = operator;
+    previousValue = null;
+    operator = null;
+    waitingForNextValue = true;
+  }
 }
 
 function calculate() {
