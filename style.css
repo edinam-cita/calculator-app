@@ -49,7 +49,7 @@ body {
   opacity: 0.85;
 }
 
-.operator {
+.operator,.clear-entry,.backspace {
   background: #ff9500;
   color: white;
 }
@@ -64,7 +64,7 @@ body {
   grid-column: span 2;
 }
 
-.btn:not(.operator):not(.equal) {
+.btn:not(.operator):not(.equal):not(.clear-entry):not(.backspace) {
   background: #333;
   color: white;
 }

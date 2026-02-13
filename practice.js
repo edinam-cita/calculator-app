@@ -3,6 +3,7 @@ let currentValue = "0";
 let operator = null;
 let waitingForNextValue = false;
 
+
 function handleDigits(digit) {
   if (waitingForNextValue) {
     currentValue = digit;

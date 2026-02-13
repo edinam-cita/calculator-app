@@ -6,9 +6,45 @@ let waitingForNextValue = false;
 let lastOperator = null;
 let secondOperand = null;
 
+const display = document.querySelector("#display");
+const digits = document.getElementsByClassName("digits");
+const domOperators = document.getElementsByClassName("operator");
+const equal = document.querySelector(".equal");
+const clearEntry = document.querySelector(".clear-entry");
+const backSpace = document.querySelector(".backspace");
+const decimal = document.querySelector(".decimal");
+
 function exitRepeatEquals() {
   lastOperator = null;
   secondOperand = null;
+}
+
+function displayOutput() {
+  display.value = currentValue;
+}
+
+function calculate() {
+  if (previousValue !== null && operator !== null) {
+    currentValue = String(
+      handleCalculate(previousValue, currentValue, operator),
+    );
+  }
+}
+
+function handleCalculate(firstValue, secondValue, theOperator) {
+  const valueOne = Number(firstValue);
+  const valueTwo = Number(secondValue);
+  if (theOperator === "+") {
+    return valueOne + valueTwo;
+  } else if (theOperator === "−") {
+    return valueOne - valueTwo;
+  } else if (theOperator === "×") {
+    return valueOne * valueTwo;
+  } else if (theOperator === "÷") {
+    return valueOne / valueTwo;
+  } else {
+    return valueTwo;
+  }
 }
 
 function handleDigits(digit) {
@@ -40,6 +76,7 @@ function handleDecimal() {
 function handleClearEntry() {
   if (operator === null && lastOperator !== null) {
     exitRepeatEquals();
+    currentValue = "0";
   } else if (waitingForNextValue) {
     return;
   } else {
@@ -64,27 +101,11 @@ function handleBackSpace() {
 function handleOperator(operation) {
   if (operator !== null && !waitingForNextValue) {
     calculate();
-  } 
+  }
 
   previousValue = currentValue;
   operator = operation;
   waitingForNextValue = true;
-}
-
-function handleCalculate(firstValue, secondValue, theOperator) {
-  const valueOne = Number(firstValue);
-  const valueTwo = Number(secondValue);
-  if (theOperator === "+") {
-    return valueOne + valueTwo;
-  } else if (theOperator === "-") {
-    return valueOne - valueTwo;
-  } else if (theOperator === "×") {
-    return valueOne * valueTwo;
-  } else if (theOperator === "/") {
-    return valueOne / valueTwo;
-  } else {
-    return valueTwo;
-  }
 }
 
 function handleEquals() {
@@ -102,10 +123,38 @@ function handleEquals() {
   }
 }
 
-function calculate() {
-  if (previousValue !== null && operator !== null) {
-    currentValue = String(
-      handleCalculate(previousValue, currentValue, operator),
-    );
-  }
+for (let btn of digits) {
+  btn.addEventListener("click", () => {
+    const btnText = btn.textContent;
+    handleDigits(btnText);
+    displayOutput();
+  });
 }
+
+for (let symbols of domOperators) {
+  symbols.addEventListener("click", () => {
+    const symbolsText = symbols.textContent;
+    handleOperator(symbolsText);
+    displayOutput();
+  });
+}
+
+equal.addEventListener("click", () => {
+  handleEquals();
+  displayOutput();
+});
+
+decimal.addEventListener("click", () => {
+  handleDecimal();
+  displayOutput();
+});
+
+backSpace.addEventListener("click", () => {
+  handleBackSpace();
+  displayOutput();
+});
+
+clearEntry.addEventListener("click", () => {
+  handleClearEntry();
+  displayOutput();
+});
